@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,13 +24,14 @@ import com.sktbd.driboard.ui.viewmodel.LoginViewModel
 
 class LoginFragment : Fragment() {
 
-    private val CLIENT_ID: String = "332c4e1351a08f89683bffedcb5242571e807fcdc2030f4ae93d5d08e4955a8e"
+    private val CLIENT_ID: String = "776e7c6224c49228e619abeaba2c967e84f3d0360865de17d61b1e653759fd1f\n"
     private val REDIRECT_URI: String = "driboard://callback"
     private var CODE: String = ""
     private var accessToken: String = ""
 
     private lateinit var binding: LoginFragmentBinding
     private lateinit var viewModel: LoginViewModel
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +46,7 @@ class LoginFragment : Fragment() {
         )
 
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        drawerLayout = activity!!.findViewById(R.id.drawerLayout)
 
         Log.i("LoginViewModel", "Called ViewModelProvider")
         return binding.root
@@ -78,6 +81,7 @@ class LoginFragment : Fragment() {
         super.onResume()
         val toolbar = activity!!.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         toolbar.visibility = View.GONE
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         val data: Uri? = activity?.intent?.data
         println(accessToken)
         if (accessToken == "" && !TextUtils.isEmpty(data?.scheme)) {
@@ -93,6 +97,7 @@ class LoginFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
         val toolbar = activity!!.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         toolbar.visibility = View.VISIBLE
     }

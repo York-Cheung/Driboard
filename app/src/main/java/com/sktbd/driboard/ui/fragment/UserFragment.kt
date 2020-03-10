@@ -1,12 +1,15 @@
 package com.sktbd.driboard.ui.fragment
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -50,8 +53,6 @@ class UserFragment : Fragment() {
         binding.rvShots.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_userFragment_to_shotBoardFragment)
         )
-
-
         return binding.root
     }
 
@@ -69,13 +70,17 @@ class UserFragment : Fragment() {
                 tvUsername.text = it.userName
                 tvAddress.text = it.location
                 tvTwitterLink.text = it.links?.twitter
+                tvTwitterLink.setOnClickListener{jumpTo(tvTwitterLink.text.toString()!!)}
                 tvMydribbble.text = it.htmlUrl
+                tvMydribbble.setOnClickListener{jumpTo(tvMydribbble.text.toString()!!)}
+
                 tvWebsite.text = it.links?.web
+                tvWebsite.setOnClickListener{jumpTo(tvWebsite.text.toString()!!)}
+
                 tvBio.text = it.bio
                 tvFollowers.text = it.followersCount.toString() + " Followers"
                 Picasso.get().load(it.avatarUrl ).into(ivAvatar)
             })
-
 
         rvShots.layoutManager = LinearLayoutManager(view!!.context, RecyclerView.HORIZONTAL, false)
 
@@ -87,6 +92,12 @@ class UserFragment : Fragment() {
         
     }
 
+    private fun jumpTo(url:String){
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        intent.data = Uri.parse(url)
+        startActivity(intent)
+    }
     private fun loadData(): String {
         val sharedPref = activity?.getSharedPreferences("auth", Context.MODE_PRIVATE)
         val token: String =  sharedPref!!.getString("accessToken", "")!!
